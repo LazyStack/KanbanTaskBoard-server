@@ -24,7 +24,7 @@ exports.createTask = async (req, res) => {
   }
 
   try {
-    const { title, description, status, priority } = req.body;
+    const { title, description, status, priority, dueDate } = req.body;
 
     // Set position to end of the column
     const count = await Task.countDocuments({
@@ -37,6 +37,7 @@ exports.createTask = async (req, res) => {
       description,
       status: status || "todo",
       priority: priority || "medium",
+      dueDate: dueDate,
       position: count,
       user: req.userId,
     });
@@ -62,12 +63,13 @@ exports.updateTask = async (req, res) => {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const { title, description, status, priority, position } = req.body;
+    const { title, description, status, priority, position, dueDate } = req.body;
 
     if (title !== undefined) task.title = title;
     if (description !== undefined) task.description = description;
     if (status !== undefined) task.status = status;
     if (priority !== undefined) task.priority = priority;
+    if (dueDate !== undefined) task.dueDate = dueDate;
     if (position !== undefined) task.position = position;
 
     await task.save();
